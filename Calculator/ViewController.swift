@@ -13,12 +13,20 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var display: UILabel!
     
-    var displayValue: Double {
+    var displayValue: Double? {
         get {
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            if let value = NSNumberFormatter().numberFromString(display.text!) {
+                return value.doubleValue
+            } else {
+                return nil
+            }
         }
         set {
-            display.text! = "\(newValue)"
+            if newValue != nil {
+                display.text! = "\(newValue!)"
+            } else {
+                display.text! = "Err"
+            }
             isTypingNewNumber = false
         }
     }
@@ -39,10 +47,14 @@ class ViewController: UIViewController {
     
     @IBAction func enter() {
         isTypingNewNumber = false
-        if let result = calcModel.pushOperand(displayValue) {
-            displayValue = result
+        if displayValue != nil {
+            if let result = calcModel.pushOperand(displayValue!) {
+                displayValue = result
+            } else {
+                displayValue = nil
+            }
         } else {
-            displayValue = 0
+            displayValue = nil
         }
     }
     
@@ -54,7 +66,7 @@ class ViewController: UIViewController {
             if let result = calcModel.performOperation(operation) {
                 displayValue = result
             } else {
-                displayValue = 0
+                displayValue = nil
             }
         }
     }
