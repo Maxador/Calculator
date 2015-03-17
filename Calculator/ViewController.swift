@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     }
     
     var isTypingNewNumber = false
-    var operandStack = [Double]()
+    var calcModel = CalculatorModel()
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -39,36 +39,23 @@ class ViewController: UIViewController {
     
     @IBAction func enter() {
         isTypingNewNumber = false
-        operandStack.append(displayValue)
-        println("operanStack = \(operandStack)")
+        if let result = calcModel.pushOperand(displayValue) {
+            displayValue = result
+        } else {
+            displayValue = 0
+        }
     }
     
     @IBAction func operate(sender: UIButton) {
-        let operation = sender.currentTitle!
         if isTypingNewNumber {
             enter()
         }
-        switch operation {
-        case "×": performOperation {$1 * $0}
-        case "÷": performOperation {$1 / $0}
-        case "+": performOperation {$1 + $0}
-        case "−": performOperation {$1 - $0}
-        case "√": performOperation {sqrt($0)}
-        default : break
-        }
-    }
-    
-    func performOperation(operation: (Double, Double) -> Double) {
-        if operandStack.count >= 2 {
-            displayValue = operation(operandStack.removeLast(), operandStack.removeLast())
-            enter()
-        }
-    }
-    
-    func performOperation(operation: Double -> Double) {
-        if operandStack.count >= 1 {
-            displayValue = operation(operandStack.removeLast())
-            enter()
+        if let operation = sender.currentTitle {
+            if let result = calcModel.performOperation(operation) {
+                displayValue = result
+            } else {
+                displayValue = 0
+            }
         }
     }
     
