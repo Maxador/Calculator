@@ -44,6 +44,13 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func appendFloatingPoint() {
+        let dotPosition = display.text!.rangeOfString(".")
+        if dotPosition == nil {
+            display.text = display.text! + "."
+            isTypingNewNumber = true
+        }
+    }
     
     @IBAction func enter() {
         isTypingNewNumber = false
@@ -71,7 +78,7 @@ class ViewController: UIViewController {
         }
     }
     @IBAction func clear() {
-        displayValue = 0
+        display.text = "0"
         isTypingNewNumber = false
         calcModel.clearOperand()
     }
