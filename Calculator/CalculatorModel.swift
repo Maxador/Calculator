@@ -85,4 +85,8 @@ class CalculatorModel {
         }
         return evaluate()
     }
+    
+    func clearOperand() {
+        opStack = [Op]()
+    }
 }

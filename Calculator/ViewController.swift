@@ -70,6 +70,11 @@ class ViewController: UIViewController {
             }
         }
     }
+    @IBAction func clear() {
+        displayValue = 0
+        isTypingNewNumber = false
+        calcModel.clearOperand()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
