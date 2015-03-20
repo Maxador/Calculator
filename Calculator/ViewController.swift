@@ -23,7 +23,13 @@ class ViewController: UIViewController {
         }
         set {
             if newValue != nil {
-                display.text! = "\(newValue!)"
+                if newValue! % 1 == 0 {
+                    let formatter = NSNumberFormatter()
+                    formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
+                    display.text! = formatter.stringFromNumber(newValue!)!
+                } else {
+                    display.text! = "\(newValue!)"
+                }
             } else {
                 display.text! = "Err"
             }
@@ -78,7 +84,7 @@ class ViewController: UIViewController {
         }
     }
     @IBAction func clear() {
-        display.text = "0"
+        displayValue = 0
         isTypingNewNumber = false
         calcModel.clearOperand()
     }
