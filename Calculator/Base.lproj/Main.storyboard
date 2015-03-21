@@ -257,10 +257,13 @@
                                 <rect key="frame" x="491" y="236.5" width="85" height="113.5"/>
                                 <accessibility key="accessibilityConfiguration" label="0"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                <state key="normal">
+                                <state key="normal" title="±">
                                     <color key="titleColor" red="0.042335332259999997" green="0.84908733199999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="changeSign:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2wW-rH-Ztq"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qPg-gR-ooT">
                                 <rect key="frame" x="491" y="115.5" width="85" height="113"/>

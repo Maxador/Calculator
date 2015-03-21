@@ -37,12 +37,13 @@ class CalculatorModel {
             knownOps[op.description] = op
         }
         learnOp(Op.BinaryOperation("×", *))
-        learnOp(Op.BinaryOperation("÷", {$1 / $0}))
+        learnOp(Op.BinaryOperation("÷"){$1 / $0})
         learnOp(Op.BinaryOperation("+", +))
-        learnOp(Op.BinaryOperation("−", {$1 - $0}))
+        learnOp(Op.BinaryOperation("−"){$1 - $0})
         learnOp(Op.UnaryOperation("sin", sin))
         learnOp(Op.UnaryOperation("cos", cos))
         learnOp(Op.UnaryOperation("√", sqrt))
+        learnOp(Op.UnaryOperation("±"){$0 * -1})
     }
     
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {

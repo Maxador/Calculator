@@ -78,11 +78,30 @@ class ViewController: UIViewController {
                 displayValue = 0
                 isTypingNewNumber = false
             } else {
-                display.text! = dropLast(display.text!)
+                display.text = dropLast(display.text!)
             }
         }
     }
     
+    @IBAction func changeSign(sender: UIButton) {
+        if isTypingNewNumber {
+            if displayValue! > 0 {
+                display.text = "-" + display.text!
+            } else {
+                if display.text!.rangeOfString("-") != nil {
+                    display.text = dropFirst(display.text!)
+                }
+            }
+        } else {
+            if let operation = sender.currentTitle {
+                if let result = calcModel.performOperation(operation) {
+                    displayValue = result
+                } else {
+                    displayValue = nil
+                }
+            }
+        }
+    }
     @IBAction func operate(sender: UIButton) {
         if isTypingNewNumber {
             enter()
@@ -95,6 +114,7 @@ class ViewController: UIViewController {
             }
         }
     }
+    
     @IBAction func clear() {
         displayValue = 0
         isTypingNewNumber = false
