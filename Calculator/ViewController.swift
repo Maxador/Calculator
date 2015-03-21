@@ -71,6 +71,18 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func backspace() {
+        let length = countElements(display.text!)
+        if isTypingNewNumber {
+            if length == 1{
+                displayValue = 0
+                isTypingNewNumber = false
+            } else {
+                display.text! = dropLast(display.text!)
+            }
+        }
+    }
+    
     @IBAction func operate(sender: UIButton) {
         if isTypingNewNumber {
             enter()
