@@ -46,7 +46,8 @@ class CalculatorModel {
         learnOp(Op.UnaryOperation("sin", sin))
         learnOp(Op.UnaryOperation("cos", cos))
         learnOp(Op.UnaryOperation("√", sqrt))
-        learnOp(Op.UnaryOperation("±"){$0 * -1})
+        // To have a different symbol in the equation display
+        knownOps["±"] = Op.UnaryOperation("-"){$0 * -1}
         learnOp(Op.Constant("π", M_PI))
     }
     
@@ -69,9 +70,7 @@ class CalculatorModel {
                     if let operand1 = op1Evaluation.result {
                         let op2Evaluation = evaluate(op1Evaluation.remainingOps)
                         if let operand2 = op2Evaluation.result {
-                            return (operation(operand1, operand2),
-                                    "(\(op2Evaluation.equation!) \(symbol) \(op1Evaluation.equation!))",
-                                    op2Evaluation.remainingOps)
+                            return (operation(operand1, operand2), "(\(op2Evaluation.equation!) \(symbol) \(op1Evaluation.equation!))", op2Evaluation.remainingOps)
                         }
                     }
                 
@@ -85,7 +84,11 @@ class CalculatorModel {
     func evaluate() -> (Double?, String?) {
         let (result, equation, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder)")
-        return (result, equation)
+        var equationDisplay = equation
+        if remainder.isEmpty {
+            equationDisplay = equationDisplay! + " ="
+        }
+        return (result, equationDisplay)
     }
     
     func pushOperand(operand: Double) -> (Double?, String?) {
