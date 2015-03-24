@@ -34,7 +34,6 @@ class CalculatorModel {
     
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
-    private var opStackDisplay = ""
     
     init() {
         func learnOp(op: Op) {
@@ -104,7 +103,7 @@ class CalculatorModel {
             case .BinaryOperation(let symbol, _):
                 let op1Read = readStack(remainingOperations)
                 if let operand1 = op1Read.result {
-                    let op2Read = readStack(remainingOperations)
+                    let op2Read = readStack(op1Read.remainingOps)
                     if let operand2 = op2Read.result {
                         return ("(\(operand1) \(symbol) \(operand2))", remainingOperations)
                     }

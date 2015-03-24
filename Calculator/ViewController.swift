@@ -70,6 +70,11 @@ class ViewController: UIViewController {
         } else {
             displayValue = nil
         }
+//        if let stack = calcModel.readStack() {
+//            operationDisplay.text = stack
+//        } else {
+//            operationDisplay.text = ""
+//        }
     }
     
     @IBAction func backspace() {
@@ -113,11 +118,17 @@ class ViewController: UIViewController {
             } else {
                 displayValue = nil
             }
+            if let stack = calcModel.readStack() {
+                operationDisplay.text = stack
+            } else {
+                operationDisplay.text = ""
+            }
         }
     }
     
     @IBAction func clear() {
         displayValue = 0
+        operationDisplay.text = ""
         isTypingNewNumber = false
         calcModel.clearOperand()
     }
