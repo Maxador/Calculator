@@ -62,19 +62,16 @@ class ViewController: UIViewController {
     @IBAction func enter() {
         isTypingNewNumber = false
         if displayValue != nil {
-            if let result = calcModel.pushOperand(displayValue!) {
+            let (result, _) = calcModel.pushOperand(displayValue!)
+            if result != nil {
                 displayValue = result
             } else {
                 displayValue = nil
+                operationDisplay.text = ""
             }
         } else {
             displayValue = nil
         }
-//        if let stack = calcModel.readStack() {
-//            operationDisplay.text = stack
-//        } else {
-//            operationDisplay.text = ""
-//        }
     }
     
     @IBAction func backspace() {
@@ -100,10 +97,14 @@ class ViewController: UIViewController {
             }
         } else {
             if let operation = sender.currentTitle {
-                if let result = calcModel.performOperation(operation) {
+                
+                let (result, equation) = calcModel.performOperation(operation)
+                if result != nil && equation != nil{
                     displayValue = result
+                    operationDisplay.text = equation
                 } else {
                     displayValue = nil
+                    operationDisplay.text = ""
                 }
             }
         }
@@ -113,14 +114,12 @@ class ViewController: UIViewController {
             enter()
         }
         if let operation = sender.currentTitle {
-            if let result = calcModel.performOperation(operation) {
+            let (result, equation) = calcModel.performOperation(operation)
+            if result != nil && equation != nil {
                 displayValue = result
+                operationDisplay.text = equation
             } else {
                 displayValue = nil
-            }
-            if let stack = calcModel.readStack() {
-                operationDisplay.text = stack
-            } else {
                 operationDisplay.text = ""
             }
         }

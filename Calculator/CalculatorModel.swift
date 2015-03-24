@@ -50,82 +50,50 @@ class CalculatorModel {
         learnOp(Op.Constant("π", M_PI))
     }
     
-    private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
+    private func evaluate(ops: [Op]) -> (result: Double?, equation: String?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOperations = ops
             let op = remainingOperations.removeLast()
             switch op {
                 case .Operand(let operand):
-                    return (operand, remainingOperations)
+                    return (operand, "\(operand)", remainingOperations)
                 
-                case .UnaryOperation(_, let operation):
+                case .UnaryOperation(let symbol, let operation):
                     let operandEvaluation = evaluate(remainingOperations)
                     if let operand = operandEvaluation.result {
-                        return (operation(operand), operandEvaluation.remainingOps)
+                        return (operation(operand), "\(symbol)(\(operandEvaluation.equation!))", operandEvaluation.remainingOps)
                     }
                 
-                case .BinaryOperation(_, let operation):
+                case .BinaryOperation(let symbol, let operation):
                     let op1Evaluation = evaluate(remainingOperations)
                     if let operand1 = op1Evaluation.result {
                         let op2Evaluation = evaluate(op1Evaluation.remainingOps)
                         if let operand2 = op2Evaluation.result {
-                            return (operation(operand1, operand2), op2Evaluation.remainingOps)
+                            return (operation(operand1, operand2),
+                                    "(\(op2Evaluation.equation!) \(symbol) \(op1Evaluation.equation!))",
+                                    op2Evaluation.remainingOps)
                         }
                     }
                 
-                case .Constant(_, let value):
-                    return (value, remainingOperations)
+                case .Constant(let symbol, let value):
+                    return (value, symbol, remainingOperations)
             }
         }
-        return (nil, ops)
+        return (nil, nil, ops)
     }
     
-    func evaluate() -> Double? {
-        let (result, remainder) = evaluate(opStack)
+    func evaluate() -> (Double?, String?) {
+        let (result, equation, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder)")
-        return result
+        return (result, equation)
     }
     
-    
-    // TODO: Refactor to do this at the same time than evaluate
-    private func readStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
-        if !ops.isEmpty {
-            var remainingOperations = ops
-            let op = remainingOperations.removeLast()
-            switch op {
-            case .Operand(let operand):
-                return ("\(operand)", remainingOperations)
-            case .UnaryOperation(let symbol, _):
-                let operandRead = readStack(remainingOperations)
-                if let operand = operandRead.result {
-                    return ("\(symbol)(\(operand))", remainingOperations)
-                }
-            case .BinaryOperation(let symbol, _):
-                let op1Read = readStack(remainingOperations)
-                if let operand1 = op1Read.result {
-                    let op2Read = readStack(op1Read.remainingOps)
-                    if let operand2 = op2Read.result {
-                        return ("(\(operand1) \(symbol) \(operand2))", remainingOperations)
-                    }
-                }
-            case .Constant(let symbol, _):
-                return (symbol, remainingOperations)
-            }
-        }
-        return (nil, ops)
-    }
-    
-    func readStack() -> String? {
-        let (result, remainder) = readStack(opStack)
-        return result
-    }
-    
-    func pushOperand(operand: Double) -> Double? {
+    func pushOperand(operand: Double) -> (Double?, String?) {
         opStack.append(Op.Operand(operand))
         return evaluate()
     }
     
-    func performOperation(symbol: String) -> Double? {
+    func performOperation(symbol: String) -> (Double?, String?) {
         if let operation = knownOps[symbol] {
             opStack.append(operation)
         }
