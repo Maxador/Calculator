@@ -12,6 +12,7 @@ class ViewController: UIViewController {
 
     
     @IBOutlet weak var display: UILabel!
+    @IBOutlet weak var operationDisplay: UILabel!
     
     var displayValue: Double? {
         get {

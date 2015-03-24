@@ -34,6 +34,7 @@ class CalculatorModel {
     
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
+    private var opStackDisplay = ""
     
     init() {
         func learnOp(op: Op) {
@@ -55,23 +56,26 @@ class CalculatorModel {
             var remainingOperations = ops
             let op = remainingOperations.removeLast()
             switch op {
-            case .Operand(let operand):
-                return (operand, remainingOperations)
-            case .UnaryOperation(_, let operation):
-                let operandEvaluation = evaluate(remainingOperations)
-                if let operand = operandEvaluation.result {
-                    return (operation(operand), operandEvaluation.remainingOps)
-                }
-            case .BinaryOperation(_, let operation):
-                let op1Evaluation = evaluate(remainingOperations)
-                if let operand1 = op1Evaluation.result {
-                    let op2Evaluation = evaluate(op1Evaluation.remainingOps)
-                    if let operand2 = op2Evaluation.result {
-                        return (operation(operand1, operand2), op2Evaluation.remainingOps)
+                case .Operand(let operand):
+                    return (operand, remainingOperations)
+                
+                case .UnaryOperation(_, let operation):
+                    let operandEvaluation = evaluate(remainingOperations)
+                    if let operand = operandEvaluation.result {
+                        return (operation(operand), operandEvaluation.remainingOps)
                     }
-                }
-            case .Constant(_, let value):
-                return (value, remainingOperations)
+                
+                case .BinaryOperation(_, let operation):
+                    let op1Evaluation = evaluate(remainingOperations)
+                    if let operand1 = op1Evaluation.result {
+                        let op2Evaluation = evaluate(op1Evaluation.remainingOps)
+                        if let operand2 = op2Evaluation.result {
+                            return (operation(operand1, operand2), op2Evaluation.remainingOps)
+                        }
+                    }
+                
+                case .Constant(_, let value):
+                    return (value, remainingOperations)
             }
         }
         return (nil, ops)
@@ -80,6 +84,40 @@ class CalculatorModel {
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
         println("\(opStack) = \(result) with \(remainder)")
+        return result
+    }
+    
+    
+    // TODO: Refactor to do this at the same time than evaluate
+    private func readStack(ops: [Op]) -> (result: String?, remainingOps: [Op]) {
+        if !ops.isEmpty {
+            var remainingOperations = ops
+            let op = remainingOperations.removeLast()
+            switch op {
+            case .Operand(let operand):
+                return ("\(operand)", remainingOperations)
+            case .UnaryOperation(let symbol, _):
+                let operandRead = readStack(remainingOperations)
+                if let operand = operandRead.result {
+                    return ("\(symbol)(\(operand))", remainingOperations)
+                }
+            case .BinaryOperation(let symbol, _):
+                let op1Read = readStack(remainingOperations)
+                if let operand1 = op1Read.result {
+                    let op2Read = readStack(remainingOperations)
+                    if let operand2 = op2Read.result {
+                        return ("(\(operand1) \(symbol) \(operand2))", remainingOperations)
+                    }
+                }
+            case .Constant(let symbol, _):
+                return (symbol, remainingOperations)
+            }
+        }
+        return (nil, ops)
+    }
+    
+    func readStack() -> String? {
+        let (result, remainder) = readStack(opStack)
         return result
     }
     

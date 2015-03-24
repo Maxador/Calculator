@@ -472,6 +472,7 @@
                     </view>
                     <connections>
                         <outlet property="display" destination="BLu-Ju-Jg0" id="oeU-jt-cx4"/>
+                        <outlet property="operationDisplay" destination="znM-9r-0Bc" id="WXW-hd-TJr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
