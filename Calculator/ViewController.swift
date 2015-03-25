@@ -61,17 +61,7 @@ class ViewController: UIViewController {
     
     @IBAction func enter() {
         isTypingNewNumber = false
-        if displayValue != nil {
-            let (result, _) = calcModel.pushOperand(displayValue!)
-            if result != nil {
-                displayValue = result
-            } else {
-                displayValue = nil
-                operationDisplay.text = ""
-            }
-        } else {
-            displayValue = nil
-        }
+        displayValue = calcModel.pushOperand(displayValue!)
     }
     
     @IBAction func backspace() {
@@ -97,15 +87,7 @@ class ViewController: UIViewController {
             }
         } else {
             if let operation = sender.currentTitle {
-                
-                let (result, equation) = calcModel.performOperation(operation)
-                if result != nil && equation != nil{
-                    displayValue = result
-                    operationDisplay.text = equation
-                } else {
-                    displayValue = nil
-                    operationDisplay.text = ""
-                }
+                displayValue = calcModel.performOperation(operation)
             }
         }
     }
@@ -114,14 +96,7 @@ class ViewController: UIViewController {
             enter()
         }
         if let operation = sender.currentTitle {
-            let (result, equation) = calcModel.performOperation(operation)
-            if result != nil && equation != nil {
-                displayValue = result
-                operationDisplay.text = equation
-            } else {
-                displayValue = nil
-                operationDisplay.text = ""
-            }
+            displayValue = calcModel.performOperation(operation)
         }
     }
     
