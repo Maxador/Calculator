@@ -16,11 +16,7 @@ class ViewController: UIViewController {
     
     var displayValue: Double? {
         get {
-            if let value = NSNumberFormatter().numberFromString(display.text!) {
-                return value.doubleValue
-            } else {
-                return nil
-            }
+            return NSNumberFormatter().numberFromString(display.text!)?.doubleValue
         }
         set {
             if newValue != nil {
@@ -32,7 +28,7 @@ class ViewController: UIViewController {
                     display.text! = "\(newValue!)"
                 }
             } else {
-                display.text! = "Err"
+                display.text! = " "
             }
             isTypingNewNumber = false
         }
@@ -91,6 +87,7 @@ class ViewController: UIViewController {
             }
         }
     }
+    
     @IBAction func operate(sender: UIButton) {
         if isTypingNewNumber {
             enter()
@@ -100,6 +97,8 @@ class ViewController: UIViewController {
             operationDisplay.text = calcModel.description
         }
     }
+    
+    
     
     @IBAction func clear() {
         displayValue = 0

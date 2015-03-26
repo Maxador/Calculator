@@ -31,12 +31,17 @@ class CalculatorModel: Printable {
     }
     
     var description: String {
-        let (result, remainder) = describe(opStack)
-        var retDesc = result!
+        var (result, remainder) = describe(opStack)
         if remainder.isEmpty {
-            retDesc += " ="
+            result!.splice(" =", atIndex: result!.endIndex)
         }
-        return retDesc
+        while !remainder.isEmpty {
+            result!.splice(", ", atIndex: result!.startIndex)
+            var (desc, newRemainder) = describe(remainder)
+            result!.splice(desc!, atIndex: result!.startIndex)
+            remainder = newRemainder
+        }
+        return result!
     }
     
     private var opStack = [Op]()
