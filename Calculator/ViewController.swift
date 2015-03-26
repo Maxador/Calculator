@@ -97,6 +97,7 @@ class ViewController: UIViewController {
         }
         if let operation = sender.currentTitle {
             displayValue = calcModel.performOperation(operation)
+            operationDisplay.text = calcModel.description
         }
     }
     

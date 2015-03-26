@@ -17,23 +17,26 @@ class CalculatorModel: Printable {
         case Constant(String, Double)
         
         var description: String {
-            get {
-                switch self {
-                case .Operand(let operand):
-                    return "\(operand)"
-                case .UnaryOperation(let symbol, _):
-                    return symbol
-                case .BinaryOperation(let symbol, _):
-                    return symbol
-                case .Constant(let symbol, _):
-                    return symbol
-                }
+            switch self {
+            case .Operand(let operand):
+                return "\(operand)"
+            case .UnaryOperation(let symbol, _):
+                return symbol
+            case .BinaryOperation(let symbol, _):
+                return symbol
+            case .Constant(let symbol, _):
+                return symbol
             }
         }
     }
     
     var description: String {
-        return ""
+        let (result, remainder) = describe(opStack)
+        var retDesc = result!
+        if remainder.isEmpty {
+            retDesc += " ="
+        }
+        return retDesc
     }
     
     private var opStack = [Op]()
@@ -55,31 +58,58 @@ class CalculatorModel: Printable {
         learnOp(Op.Constant("π", M_PI))
     }
     
+    private func describe(ops: [Op]) -> (description: String?, remainingOps:[Op]) {
+        if !ops.isEmpty {
+            var remainingOperations = ops
+            let op = remainingOperations.removeLast()
+            switch op {
+            case .Operand(let operand):
+                return ("\(operand)", remainingOperations)
+            case .UnaryOperation(let symbol, _):
+                let opDescription = describe(remainingOperations)
+                if let operand = opDescription.description {
+                    return ("\(symbol)(\(operand))", opDescription.remainingOps)
+                }
+            case .BinaryOperation(let symbol, _):
+                let opDescription1 = describe(remainingOperations)
+                if let operand1 = opDescription1.description {
+                    let opDescription2 = describe(opDescription1.remainingOps)
+                    if let operand2 = opDescription2.description {
+                        return ("\(operand1) \(symbol) \(operand2)", opDescription2.remainingOps)
+                    } else {
+                        return ("\(operand1) \(symbol) ?", opDescription1.remainingOps)
+                    }
+                }
+            case .Constant(let symbol, _):
+                return (symbol, remainingOperations)
+            }
+        }
+        return (nil, ops)
+    }
+    
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]) {
         if !ops.isEmpty {
             var remainingOperations = ops
             let op = remainingOperations.removeLast()
             switch op {
-                case .Operand(let operand):
-                    return (operand, remainingOperations)
-                
-                case .UnaryOperation(let symbol, let operation):
-                    let operandEvaluation = evaluate(remainingOperations)
-                    if let operand = operandEvaluation.result {
-                        return (operation(operand), operandEvaluation.remainingOps)
+            case .Operand(let operand):
+                return (operand, remainingOperations)
+            case .UnaryOperation(_, let operation):
+                let operandEvaluation = evaluate(remainingOperations)
+                if let operand = operandEvaluation.result {
+                    return (operation(operand), operandEvaluation.remainingOps)
+                }
+            case .BinaryOperation(_, let operation):
+                let op1Evaluation = evaluate(remainingOperations)
+                if let operand1 = op1Evaluation.result {
+                    let op2Evaluation = evaluate(op1Evaluation.remainingOps)
+                    if let operand2 = op2Evaluation.result {
+                        return (operation(operand1, operand2), op2Evaluation.remainingOps)
                     }
+                }
                 
-                case .BinaryOperation(let symbol, let operation):
-                    let op1Evaluation = evaluate(remainingOperations)
-                    if let operand1 = op1Evaluation.result {
-                        let op2Evaluation = evaluate(op1Evaluation.remainingOps)
-                        if let operand2 = op2Evaluation.result {
-                            return (operation(operand1, operand2), op2Evaluation.remainingOps)
-                        }
-                    }
-                
-                case .Constant(_, let value):
-                    return (value, remainingOperations)
+            case .Constant(_, let value):
+                return (value, remainingOperations)
             }
         }
         return (nil, ops)
