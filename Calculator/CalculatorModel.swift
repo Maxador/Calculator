@@ -13,7 +13,7 @@ class CalculatorModel: Printable {
     private enum Op: Printable {
         case Operand(Double)
         case UnaryOperation(String, Double -> Double)
-        case BinaryOperation(String, (Double, Double) -> Double)
+        case BinaryOperation(String, Int, (Double, Double) -> Double)
         case Constant(String, Double)
         
         var description: String {
@@ -22,7 +22,7 @@ class CalculatorModel: Printable {
                 return "\(operand)"
             case .UnaryOperation(let symbol, _):
                 return symbol
-            case .BinaryOperation(let symbol, _):
+            case .BinaryOperation(let symbol, _, _):
                 return symbol
             case .Constant(let symbol, _):
                 return symbol
@@ -31,13 +31,13 @@ class CalculatorModel: Printable {
     }
     
     var description: String {
-        var (result, remainder) = describe(opStack)
+        var (result, remainder) = describe(opStack, previousPriority:Int.min)
         if remainder.isEmpty {
             result!.splice(" =", atIndex: result!.endIndex)
         }
         while !remainder.isEmpty {
             result!.splice(", ", atIndex: result!.startIndex)
-            var (desc, newRemainder) = describe(remainder)
+            var (desc, newRemainder) = describe(remainder, previousPriority:Int.min)
             result!.splice(desc!, atIndex: result!.startIndex)
             remainder = newRemainder
         }
@@ -51,10 +51,10 @@ class CalculatorModel: Printable {
         func learnOp(op: Op) {
             knownOps[op.description] = op
         }
-        learnOp(Op.BinaryOperation("×", *))
-        learnOp(Op.BinaryOperation("÷"){$1 / $0})
-        learnOp(Op.BinaryOperation("+", +))
-        learnOp(Op.BinaryOperation("−"){$1 - $0})
+        learnOp(Op.BinaryOperation("×", Int.max, *))
+        learnOp(Op.BinaryOperation("÷", Int.max){$1 / $0})
+        learnOp(Op.BinaryOperation("+", 0, +))
+        learnOp(Op.BinaryOperation("−", 0){$1 - $0})
         learnOp(Op.UnaryOperation("sin", sin))
         learnOp(Op.UnaryOperation("cos", cos))
         learnOp(Op.UnaryOperation("√", sqrt))
@@ -63,7 +63,7 @@ class CalculatorModel: Printable {
         learnOp(Op.Constant("π", M_PI))
     }
     
-    private func describe(ops: [Op]) -> (description: String?, remainingOps:[Op]) {
+    private func describe(ops: [Op], previousPriority: Int) -> (description: String?, remainingOps:[Op]) {
         if !ops.isEmpty {
             var remainingOperations = ops
             let op = remainingOperations.removeLast()
@@ -71,19 +71,26 @@ class CalculatorModel: Printable {
             case .Operand(let operand):
                 return ("\(operand)", remainingOperations)
             case .UnaryOperation(let symbol, _):
-                let opDescription = describe(remainingOperations)
+                let opDescription = describe(remainingOperations, previousPriority:Int.min)
                 if let operand = opDescription.description {
                     return ("\(symbol)(\(operand))", opDescription.remainingOps)
                 }
-            case .BinaryOperation(let symbol, _):
-                let opDescription1 = describe(remainingOperations)
+            case .BinaryOperation(let symbol, let priority, _):
+                let opDescription1 = describe(remainingOperations, previousPriority:priority)
                 if let operand1 = opDescription1.description {
-                    let opDescription2 = describe(opDescription1.remainingOps)
+                    let opDescription2 = describe(opDescription1.remainingOps, previousPriority: priority)
+                    var returnString = "\(operand1) \(symbol) "
                     if let operand2 = opDescription2.description {
-                        return ("\(operand1) \(symbol) \(operand2)", opDescription2.remainingOps)
+                        returnString.splice(operand2, atIndex: returnString.endIndex)
                     } else {
-                        return ("\(operand1) \(symbol) ?", opDescription1.remainingOps)
+                        let operand2 = "?"
+                        returnString.splice(operand2, atIndex: returnString.endIndex)
                     }
+                    if previousPriority > priority {
+                        returnString.splice("(", atIndex: returnString.startIndex)
+                        returnString.splice(")", atIndex: returnString.endIndex)
+                    }
+                    return (returnString, opDescription2.remainingOps)
                 }
             case .Constant(let symbol, _):
                 return (symbol, remainingOperations)
@@ -104,7 +111,7 @@ class CalculatorModel: Printable {
                 if let operand = operandEvaluation.result {
                     return (operation(operand), operandEvaluation.remainingOps)
                 }
-            case .BinaryOperation(_, let operation):
+            case .BinaryOperation(_, _, let operation):
                 let op1Evaluation = evaluate(remainingOperations)
                 if let operand1 = op1Evaluation.result {
                     let op2Evaluation = evaluate(op1Evaluation.remainingOps)
