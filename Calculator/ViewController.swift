@@ -9,7 +9,6 @@
 import UIKit
 
 class ViewController: UIViewController {
-
     
     @IBOutlet weak var display: UILabel!
     @IBOutlet weak var operationDisplay: UILabel!
@@ -36,6 +35,7 @@ class ViewController: UIViewController {
     
     var isTypingNewNumber = false
     var calcModel = CalculatorModel()
+    
     
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -111,12 +111,12 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
 }
 
