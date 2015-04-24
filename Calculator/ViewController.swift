@@ -61,7 +61,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func backspace() {
-        let length = countElements(display.text!)
+        let length = count(display.text!)
         if isTypingNewNumber {
             if length == 1{
                 displayValue = 0
