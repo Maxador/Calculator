@@ -72,22 +72,15 @@ class CalculatorModel: Printable {
                 return ("\(operand)", remainingOperations)
             case .UnaryOperation(let symbol, _):
                 let opDescription = describe(remainingOperations, previousPriority:Int.min)
-                if let operand = opDescription.description {
-                    return ("\(symbol)(\(operand))", opDescription.remainingOps)
-                } else {
-                    return ("\(symbol)(?)", opDescription.remainingOps)
-                }
+                let operand = opDescription.description ?? "?"
+                return ("\(symbol)(\(operand))", opDescription.remainingOps)
             case .BinaryOperation(let symbol, let priority, _):
                 let opDescription1 = describe(remainingOperations, previousPriority:priority)
                 if let operand1 = opDescription1.description {
                     let opDescription2 = describe(opDescription1.remainingOps, previousPriority: priority)
                     var returnString = "\(operand1) \(symbol) "
-                    if let operand2 = opDescription2.description {
-                        returnString.splice(operand2, atIndex: returnString.endIndex)
-                    } else {
-                        let operand2 = "?"
-                        returnString.splice(operand2, atIndex: returnString.endIndex)
-                    }
+                    let operand2 = opDescription2.description ?? "?"
+                    returnString.splice(operand2, atIndex: returnString.endIndex)
                     if previousPriority > priority {
                         returnString.splice("(", atIndex: returnString.startIndex)
                         returnString.splice(")", atIndex: returnString.endIndex)

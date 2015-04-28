@@ -332,7 +332,7 @@
                                 <rect key="frame" x="504" y="236" width="74" height="115"/>
                                 <accessibility key="accessibilityConfiguration" label="0"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal">
+                                <state key="normal" title="⇥M">
                                     <color key="titleColor" red="0.042335332259999997" green="0.84908733199999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -341,7 +341,7 @@
                                 <rect key="frame" x="504" y="114" width="74" height="116"/>
                                 <accessibility key="accessibilityConfiguration" label="0"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                <state key="normal">
+                                <state key="normal" title="M">
                                     <color key="titleColor" red="0.042335332259999997" green="0.84908733199999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
