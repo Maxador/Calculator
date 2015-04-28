@@ -74,6 +74,8 @@ class CalculatorModel: Printable {
                 let opDescription = describe(remainingOperations, previousPriority:Int.min)
                 if let operand = opDescription.description {
                     return ("\(symbol)(\(operand))", opDescription.remainingOps)
+                } else {
+                    return ("\(symbol)(?)", opDescription.remainingOps)
                 }
             case .BinaryOperation(let symbol, let priority, _):
                 let opDescription1 = describe(remainingOperations, previousPriority:priority)
