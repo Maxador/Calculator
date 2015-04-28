@@ -345,6 +345,9 @@
                                     <color key="titleColor" red="0.042335332259999997" green="0.84908733199999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="appendVariable:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Agj-Ea-Z3S"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="znM-9r-0Bc">
                                 <rect key="frame" x="16" y="28" width="568" height="36"/>

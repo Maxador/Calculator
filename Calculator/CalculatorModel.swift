@@ -15,6 +15,7 @@ class CalculatorModel: Printable {
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, Int, (Double, Double) -> Double)
         case Constant(String, Double)
+        case Variable(String, Double?)
         
         var description: String {
             switch self {
@@ -25,6 +26,8 @@ class CalculatorModel: Printable {
             case .BinaryOperation(let symbol, _, _):
                 return symbol
             case .Constant(let symbol, _):
+                return symbol
+            case .Variable(let symbol, _):
                 return symbol
             }
         }
@@ -46,6 +49,7 @@ class CalculatorModel: Printable {
     
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
+    var variablesValues = [String:Double]()
     
     init() {
         func learnOp(op: Op) {
@@ -89,6 +93,8 @@ class CalculatorModel: Printable {
                 }
             case .Constant(let symbol, _):
                 return (symbol, remainingOperations)
+            case .Variable(let symbol, _):
+                return (symbol, remainingOperations)
             }
         }
         return (nil, ops)
@@ -117,6 +123,8 @@ class CalculatorModel: Printable {
                 
             case .Constant(_, let value):
                 return (value, remainingOperations)
+            case .Variable(_, let value):
+                return (value, remainingOperations)
             }
         }
         return (nil, ops)
@@ -130,6 +138,11 @@ class CalculatorModel: Printable {
     
     func pushOperand(operand: Double) -> Double? {
         opStack.append(Op.Operand(operand))
+        return evaluate()
+    }
+    
+    func pushOperand(symbol: String) -> Double? {
+        opStack.append(Op.Variable(symbol, variablesValues[symbol]))
         return evaluate()
     }
     

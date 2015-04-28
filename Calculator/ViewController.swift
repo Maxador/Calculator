@@ -55,6 +55,14 @@ class ViewController: UIViewController {
         }
     }
     
+    @IBAction func appendVariable(sender: UIButton) {
+        if isTypingNewNumber {
+            enter()
+        }
+        displayValue = calcModel.pushOperand(sender.currentTitle!)
+    }
+    
+    
     @IBAction func enter() {
         isTypingNewNumber = false
         displayValue = calcModel.pushOperand(displayValue!)
