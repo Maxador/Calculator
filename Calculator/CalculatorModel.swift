@@ -15,7 +15,7 @@ class CalculatorModel: Printable {
         case UnaryOperation(String, Double -> Double)
         case BinaryOperation(String, Int, (Double, Double) -> Double)
         case Constant(String, Double)
-        case Variable(String, Double?)
+        case Variable(String)
         
         var description: String {
             switch self {
@@ -27,7 +27,7 @@ class CalculatorModel: Printable {
                 return symbol
             case .Constant(let symbol, _):
                 return symbol
-            case .Variable(let symbol, _):
+            case .Variable(let symbol):
                 return symbol
             }
         }
@@ -49,7 +49,7 @@ class CalculatorModel: Printable {
     
     private var opStack = [Op]()
     private var knownOps = [String:Op]()
-    var variablesValues = [String:Double]()
+    private var variablesValues = [String:Double]()
     
     init() {
         func learnOp(op: Op) {
@@ -93,7 +93,7 @@ class CalculatorModel: Printable {
                 }
             case .Constant(let symbol, _):
                 return (symbol, remainingOperations)
-            case .Variable(let symbol, _):
+            case .Variable(let symbol):
                 return (symbol, remainingOperations)
             }
         }
@@ -123,8 +123,8 @@ class CalculatorModel: Printable {
                 
             case .Constant(_, let value):
                 return (value, remainingOperations)
-            case .Variable(_, let value):
-                return (value, remainingOperations)
+            case .Variable(let symbol):
+                return (variablesValues[symbol], remainingOperations)
             }
         }
         return (nil, ops)
@@ -142,7 +142,12 @@ class CalculatorModel: Printable {
     }
     
     func pushOperand(symbol: String) -> Double? {
-        opStack.append(Op.Variable(symbol, variablesValues[symbol]))
+        opStack.append(Op.Variable(symbol))
+        return evaluate()
+    }
+    
+    func pushVariableValue(symbol:String, value: Double) -> Double? {
+        variablesValues[symbol] = value
         return evaluate()
     }
     

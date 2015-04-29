@@ -62,6 +62,11 @@ class ViewController: UIViewController {
         displayValue = calcModel.pushOperand(sender.currentTitle!)
     }
     
+    @IBAction func setVariableValue() {
+        isTypingNewNumber = false
+        displayValue = calcModel.pushVariableValue("M", value: displayValue!)
+    }
+    
     
     @IBAction func enter() {
         isTypingNewNumber = false
