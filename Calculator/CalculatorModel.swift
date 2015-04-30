@@ -160,5 +160,6 @@ class CalculatorModel: Printable {
     
     func clearOperand() {
         opStack = [Op]()
+        variablesValues = [String:Double]()
     }
 }
