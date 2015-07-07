@@ -132,7 +132,6 @@ class CalculatorModel: Printable {
     
     func evaluate() -> Double? {
         let (result, remainder) = evaluate(opStack)
-        println("\(opStack) = \(result) with \(remainder)")
         return result
     }
     
