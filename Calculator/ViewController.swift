@@ -15,14 +15,15 @@ class ViewController: UIViewController {
     
     var displayValue: Double? {
         get {
-            return NSNumberFormatter().numberFromString(display.text!)?.doubleValue
+            return NumberFormatter().number(from: display.text!)?.doubleValue
         }
         set {
             if newValue != nil {
-                if newValue! % 1 == 0 {
-                    let formatter = NSNumberFormatter()
-                    formatter.numberStyle = NSNumberFormatterStyle.DecimalStyle
-                    display.text! = formatter.stringFromNumber(newValue!)!
+                if newValue!.truncatingRemainder(dividingBy: 1) == 0 {
+                    let formatter = NumberFormatter()
+                    
+                    formatter.numberStyle = NumberFormatter.Style.decimal
+                    display.text! = formatter.string(from: newValue! as NSNumber)!
                 } else {
                     display.text! = "\(newValue!)"
                 }
@@ -37,7 +38,7 @@ class ViewController: UIViewController {
     var calcModel = CalculatorModel()
     
     
-    @IBAction func appendDigit(sender: UIButton) {
+    @IBAction func appendDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         if isTypingNewNumber {
             display.text = display.text! + digit
@@ -48,14 +49,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func appendFloatingPoint() {
-        let dotPosition = display.text!.rangeOfString(".")
+        let dotPosition = display.text!.range(of: ".")
         if dotPosition == nil {
             display.text = display.text! + "."
             isTypingNewNumber = true
         }
     }
     
-    @IBAction func appendVariable(sender: UIButton) {
+    @IBAction func appendVariable(_ sender: UIButton) {
         if isTypingNewNumber {
             enter()
         }
@@ -74,24 +75,24 @@ class ViewController: UIViewController {
     }
     
     @IBAction func backspace() {
-        let length = count(display.text!)
+        let length = display.text!.characters.count
         if isTypingNewNumber {
             if length == 1{
                 displayValue = 0
                 isTypingNewNumber = false
             } else {
-                display.text = dropLast(display.text!)
+                display.text!.remove(at: display.text!.index(before:display.text!.endIndex))
             }
         }
     }
     
-    @IBAction func changeSign(sender: UIButton) {
+    @IBAction func changeSign(_ sender: UIButton) {
         if isTypingNewNumber {
             if displayValue! > 0 {
                 display.text = "-" + display.text!
             } else {
-                if display.text!.rangeOfString("-") != nil {
-                    display.text = dropFirst(display.text!)
+                if display.text!.range(of: "-") != nil {
+                    display.text! = String(display.text!.characters.dropFirst())
                 }
             }
         } else {
@@ -101,7 +102,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func operate(sender: UIButton) {
+    @IBAction func operate(_ sender: UIButton) {
         if isTypingNewNumber {
             enter()
         }
