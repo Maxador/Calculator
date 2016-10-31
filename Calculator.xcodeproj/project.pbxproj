@@ -164,9 +164,11 @@
 				TargetAttributes = {
 					7347CFED1AB7AE1700DB7EE4 = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 0810;
 					};
 					7347D0021AB7AE1700DB7EE4 = {
 						CreatedOnToolsVersion = 6.2;
+						LastSwiftMigration = 0810;
 						TestTargetID = 7347CFED1AB7AE1700DB7EE4;
 					};
 				};
@@ -345,6 +347,7 @@
 				INFOPLIST_FILE = Calculator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -355,6 +358,7 @@
 				INFOPLIST_FILE = Calculator/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -373,6 +377,7 @@
 				INFOPLIST_FILE = CalculatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Calculator.app/Calculator";
 			};
 			name = Debug;
@@ -388,6 +393,7 @@
 				INFOPLIST_FILE = CalculatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Calculator.app/Calculator";
 			};
 			name = Release;
