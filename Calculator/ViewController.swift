@@ -37,6 +37,7 @@ class ViewController: UIViewController {
     var isTypingNewNumber = false
     var calcModel = CalculatorModel()
     
+    // MARK: - Interface Builder Actions
     
     @IBAction func appendDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
@@ -120,6 +121,8 @@ class ViewController: UIViewController {
         isTypingNewNumber = false
         calcModel.clearOperand()
     }
+    
+    // MARK: - Inherited public methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
