@@ -10,12 +10,16 @@ import Foundation
 
 class CalculatorModel: CustomStringConvertible {
     
+    
+    
     fileprivate enum Op: CustomStringConvertible {
         case operand(Double)
         case unaryOperation(String, (Double) -> Double)
         case binaryOperation(String, Int, (Double, Double) -> Double)
         case constant(String, Double)
         case variable(String)
+        
+        // MARK: - CustomStringConvertible
         
         var description: String {
             switch self {
@@ -33,23 +37,11 @@ class CalculatorModel: CustomStringConvertible {
         }
     }
     
-    var description: String {
-        var (result, remainder) = describe(opStack, previousPriority:Int.min)
-        if remainder.isEmpty {
-            result!.insert(contentsOf: " =".characters, at: result!.endIndex)
-        }
-        while !remainder.isEmpty {
-            result!.insert(contentsOf: ", ".characters, at: result!.startIndex)
-            var (desc, newRemainder) = describe(remainder, previousPriority:Int.min)
-            result!.insert(contentsOf: desc!.characters, at: result!.startIndex)
-            remainder = newRemainder
-        }
-        return result!
-    }
-    
     fileprivate var opStack = [Op]()
     fileprivate var knownOps = [String:Op]()
     fileprivate var variablesValues = [String:Double]()
+    
+    // MARK: - Initializer
     
     init() {
         func learnOp(_ op: Op) {
@@ -65,6 +57,22 @@ class CalculatorModel: CustomStringConvertible {
         // To have a different symbol in the equation display
         knownOps["±"] = Op.unaryOperation("-"){$0 * -1}
         learnOp(Op.constant("π", M_PI))
+    }
+    
+    // MARK: - CustomStringConvertible
+    
+    var description: String {
+        var (result, remainder) = describe(opStack, previousPriority:Int.min)
+        if remainder.isEmpty {
+            result!.insert(contentsOf: " =".characters, at: result!.endIndex)
+        }
+        while !remainder.isEmpty {
+            result!.insert(contentsOf: ", ".characters, at: result!.startIndex)
+            var (desc, newRemainder) = describe(remainder, previousPriority:Int.min)
+            result!.insert(contentsOf: desc!.characters, at: result!.startIndex)
+            remainder = newRemainder
+        }
+        return result!
     }
     
     fileprivate func describe(_ ops: [Op], previousPriority: Int) -> (description: String?, remainingOps:[Op]) {
@@ -131,7 +139,7 @@ class CalculatorModel: CustomStringConvertible {
     }
     
     func evaluate() -> Double? {
-        let (result, remainder) = evaluate(opStack)
+        let (result, _) = evaluate(opStack)
         return result
     }
     
